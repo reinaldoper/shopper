@@ -9,17 +9,8 @@ class ProductService {
     this.model = new ProductModel(connection);
   }
 
-  public getValidation = async (product: Product[]): Promise<Product[]> => {
+  public getValidation = async (product: number): Promise<Product[]> => {
     return await this.model.getValidation(product);
-  }
-
-  public getPacket = async (product: number): Promise<Product[]> => {
-    const products = await this.model.validatePacket(product);
-    return products;
-  }
-  public async getValidate(product: number): Promise<Product[]> {
-    const products = await this.model.validate(product);
-    return products;
   }
 
   public update = async (product: Product[]): Promise<Product[]> => {

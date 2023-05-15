@@ -1,16 +1,23 @@
 import { useState } from 'react'
 import './App.css'
+import { getValidated, update } from './service/fetchs';
 
 function App() {
   const [file, setFile] = useState();
   const [fileOn, setFileOn] = useState();
-  console.log('on',fileOn);
+  const [validate, setValidated] = useState([]);
+  const [save, setSave] = useState(true);
+  const [render, setRender] = useState(false)
 
   const handleOnChange = (e) => {
     setFile(e.target.files[0]);
   };
 
   const handleConvert = () => {
+    setRender(false);
+    setFileOn([]);
+    setValidated([])
+    setSave(true);
     const reader = new FileReader();
 
     reader.onload = (event) => {
@@ -46,11 +53,45 @@ function App() {
     setFileOn(jsonData)
   };
 
-  const handleClicks = () => {
+  const handleClicks = async () => {
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(fileOn),
+    };
+    const { type, message } = await getValidated(options);
+    setValidated(message);
+    setSave(!type);
+    setRender(true);
   }
-  const handleAtualizar = () => {
+  const handleAtualizar = async () => {
+    const options = {
+      method: 'PUT',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(fileOn),
+    };
+    await update(options);
+    setRender(false);
+    setFileOn([]);
+    setValidated([]);
+    setSave(true);
   }
+  const resultJson = validate.map((item, index) => (
+    <div key={index} className='div-li'>
+      <li><strong>Codigo:</strong> {item.code}</li>
+      <li><strong>Nome:</strong> {item.name}</li>
+      <li><strong>Preço atual:</strong> {item.actual_price}</li>
+      <li><strong>Novo preço:</strong> {item.new_price}</li>
+      <li><strong>Message:</strong> {item.message}</li>
+    </div>
 
+  ))
+
+  console.log('save', save);
   return (
     <>
       <h1>Shopper</h1>
@@ -58,8 +99,9 @@ function App() {
         <input type="file" onChange={handleOnChange} />
         <button onClick={handleConvert}>Convert</button>
         <button type='button' onClick={handleClicks}>VALIDAR</button>
-        <button type='button' onClick={handleAtualizar}>ATUALIZAR</button>
+        <button type='button' disabled={save} onClick={handleAtualizar}>ATUALIZAR</button>
       </div>
+      {render ? <ol>{resultJson}</ol> : null}
     </>
   )
 }
