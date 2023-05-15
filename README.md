@@ -13,7 +13,7 @@ projeto teste técnico vaga fullStack
 ## Na raiz:
 `npm install`
 ## Rodar a aplicação:
-`npm run dev`
+`npm run dev` `clicar no link: http://localhost:5173/`
 ## Para escolher o arquivo .CSV clicar no botão:
 `escolher arquivo`
 ## Converter arquivo .CSV em .JSON clicar no botão:
