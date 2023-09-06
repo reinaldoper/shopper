@@ -23,3 +23,8 @@ export interface TObj {
   actual_price: number;
 }
 
+export interface TMessage {
+  i:string;
+  message: string;
+}
+

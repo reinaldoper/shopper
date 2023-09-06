@@ -2,7 +2,7 @@ import { Product } from './../interfaces/product.interface';
 import { Request, Response } from 'express';
 import statusCodes from '../statusCodes';
 import ProductService from '../services/product.service';
-import { TObj } from '../interfaces/product.interface';
+import { TObj, TMessage } from '../interfaces/product.interface';
 
 class ProductController {
 
@@ -11,12 +11,14 @@ class ProductController {
   public getValidation = async (req: Request, res: Response) => {
     const updates = req.body;
     
+    console.log(updates);
+    
     
     try {
       const result = updates.map(async (item: Product) => {
         const obj: TObj = {"new_price": item.new_price, "code": item.product_code, "message": "Produto validado!", "name": item.name, "actual_price": 0};
         if (!item.product_code || !item.new_price) {
-          obj["message"] = "Faltam campos";
+          obj["message"] = "Campos inválidos!";
         } else if (isNaN(item.new_price) || isNaN(item.product_code)) {
           obj["message"] = "Código ou novo preço inválido!";
         } else {
@@ -36,26 +38,28 @@ class ProductController {
         }
         return obj;
       });
-      const promiseeAll = await Promise.all(result);
-      if (promiseeAll.some((i: any) => i.message !== "Produto validado!")) {
+      const promiseeAll: TObj[] = await Promise.all(result);
+      if (promiseeAll.some((i: TObj) => i.message !== "Produto validado!")) {
         return res.status(statusCodes.BAD_REQUEST).json({ type: false, message: promiseeAll});
       } else {
         return res.status(statusCodes.OK).json({ type: true, message: promiseeAll});
       }
     } catch (error) {
-      res.status(500).json({ message: 'Erro ao validar dados.' });
+      res.status(500).json({ error: 'Erro ao validar dados.' });
     }
     
   };
 
   public update = async (req: Request, res: Response) => {
     const products = req.body;
+    console.log(products);
+    
     try {
       await this.productService.update(products);
 
       return res.status(statusCodes.OK).json({ message: 'Preços atualizados com sucesso.' });
     } catch (error) {
-      res.status(500).json({ message: 'Erro ao atualizar os preços.' });
+      res.status(500).json({ error: 'Erro ao validar dados.' });
     }
   }
 }

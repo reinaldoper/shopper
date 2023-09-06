@@ -1,0 +1,30 @@
+version: '3'
+services:
+  backend-shopper:
+    build:
+      context: ./back-end
+      dockerfile: Dockerfile
+    ports:
+      - 3001:3001
+    depends_on:
+      - shopper
+    environment:
+      - APP_PORT=3001
+      - DB_USER=root
+      - DB_PASS=123456
+      - DB_HOST=shopper
+      - DB_PORT=3306
+
+  frontend-shopper:
+    build:
+      context: ./front-end
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+
+  shopper:
+    image: mysql:8.0.21
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
