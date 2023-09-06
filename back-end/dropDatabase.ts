@@ -8,6 +8,7 @@ async function dropDatabase() {
       user: 'root',
       password: '123456',
     });
+    await connection.query(`DROP DATABASE IF EXISTS shopper;`)
     await connection.query(`CREATE DATABASE IF NOT EXISTS shopper;`)
     await connection.query(`USE shopper;`);
     await connection.query(`
