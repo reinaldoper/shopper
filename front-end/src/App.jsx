@@ -61,8 +61,7 @@ function App() {
 
       if (currentLine.length !== headers.length) {
         alert('CSV file has inconsistent data.');
-        setFile([]);
-        break;
+        continue;
       }
 
       const obj = {};
